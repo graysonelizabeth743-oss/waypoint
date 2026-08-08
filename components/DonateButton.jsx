@@ -8,13 +8,15 @@ export default function DonateButton({ siteName = "Waypoint Relief" }) {
   const [amount, setAmount] = useState("25.00");
   const [paid, setPaid] = useState(false);
 
-  // Uses your PayPal Client ID (falls back to "test" for instant rendering in dev)
-  const paypalClientId =
-    process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test";
+  // STRICT PRODUCTION CHECK: Reads the public Next.js environment variable
+  const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+
+  if (!paypalClientId) {
+    console.error("Missing NEXT_PUBLIC_PAYPAL_CLIENT_ID environment variable.");
+  }
 
   return (
     <div className="max-w-xl mx-auto rounded-3xl bg-cream p-8 sm:p-10 border border-ink/10 shadow-sm text-ink space-y-8">
-
       {/* Header Section */}
       <div className="text-center space-y-3 pb-6 border-b border-ink/10">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-coral/10 text-coral text-xs font-mono uppercase tracking-widest">
@@ -86,7 +88,12 @@ export default function DonateButton({ siteName = "Waypoint Relief" }) {
                 min="1"
                 step="0.01"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => {
+                  // Prevents negative numbers or empty string breaking the float format
+                  const val = e.target.value;
+                  if (parseFloat(val) < 0) return;
+                  setAmount(val);
+                }}
                 placeholder="0.00"
                 className="w-full pl-9 pr-4 py-3 bg-white/50 border border-ink/10 rounded-xl text-lg font-semibold text-ink placeholder:text-ink/30 focus:outline-none focus:border-coral focus:ring-1 focus:ring-coral transition-colors"
               />
@@ -99,48 +106,49 @@ export default function DonateButton({ siteName = "Waypoint Relief" }) {
               Secure Checkout via PayPal & Cards
             </div>
 
-            <PayPalScriptProvider
-              options={{
-                clientId: paypalClientId,
-                currency: "USD",
-                intent: "capture",
-                "enable-funding": "card,paylater",
-              }}
-            >
-              <PayPalButtons
-                style={{
-                  layout: "vertical",
-                  color: "gold",
-                  shape: "pill", // Matches rounded aesthetic
-                  label: "donate",
-                  height: 48,
+            {paypalClientId && (
+              <PayPalScriptProvider
+                options={{
+                  clientId: paypalClientId,
+                  currency: "USD",
+                  intent: "capture",
                 }}
-                forceReRender={[amount]}
-                createOrder={(data, actions) => {
-                  return actions.order.create({
-                    intent: "CAPTURE",
-                    purchase_units: [
-                      {
-                        description: `Donation to ${siteName}`,
-                        amount: {
-                          currency_code: "USD",
-                          value: amount && parseFloat(amount) > 0 ? amount : "25.00",
+              >
+                <PayPalButtons
+                  style={{
+                    layout: "vertical",
+                    color: "gold",
+                    shape: "pill",
+                    label: "donate",
+                    height: 48,
+                  }}
+                  forceReRender={[amount]}
+                  createOrder={(data, actions) => {
+                    // Fallback to safety floor of 1.00 if input field is blank or zero
+                    const finalAmount = amount && parseFloat(amount) >= 1 ? amount : "1.00";
+                    return actions.order.create({
+                      purchase_units: [
+                        {
+                          description: `Donation to ${siteName}`,
+                          amount: {
+                            currency_code: "USD",
+                            value: finalAmount,
+                          },
                         },
-                      },
-                    ],
-                  });
-                }}
-                onApprove={async (data, actions) => {
-                  if (actions.order) {
-                    await actions.order.capture();
-                    setPaid(true);
-                  }
-                }}
-                onError={(err) => {
-                  console.error("PayPal Error:", err);
-                }}
-              />
-            </PayPalScriptProvider>
+                      ],
+                    });
+                  }}
+                  onApprove={async (data, actions) => {
+                    return actions.order.capture().then(() => {
+                      setPaid(true);
+                    });
+                  }}
+                  onError={(err) => {
+                    console.error("PayPal Production Error:", err);
+                  }}
+                />
+              </PayPalScriptProvider>
+            )}
 
             <p className="text-center text-xs text-ink/40">
               Encrypted end-to-end. No credit card details are stored on our servers.
