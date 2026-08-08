@@ -1,4 +1,17 @@
+"use client";
+
+import { useState } from "react";
+
 export default function Header({ site, dispatch }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const navLinks = [
+    { href: "#ledger", label: "Ledger" },
+    { href: "#process", label: "How it moves" },
+    { href: "#donors", label: "Confirmations" },
+    { href: "/subscribe", label: "Subscribe" },
+  ];
+
   return (
     <header className="sticky top-0 z-50 bg-cream/95 backdrop-blur border-b border-ink/10">
       <div className="flex items-center justify-between px-6 py-4">
@@ -15,6 +28,7 @@ export default function Header({ site, dispatch }) {
             {site.name}
           </span>
         </a>
+
         <div className="hidden md:flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-ink/50">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-coral opacity-60"></span>
@@ -22,19 +36,76 @@ export default function Header({ site, dispatch }) {
           </span>
           {dispatch.status} · {dispatch.location}
         </div>
+
+        {/* Desktop nav */}
         <nav className="hidden sm:flex items-center gap-8 text-sm text-ink/70">
-          <a href="#ledger" className="hover:text-coral transition-colors">Ledger</a>
-          <a href="#process" className="hover:text-coral transition-colors">How it moves</a>
-          <a href="#donors" className="hover:text-coral transition-colors">Confirmations</a>
-          <a href="/subscribe" className="hover:text-coral transition-colors">Subscribe</a>
+          {navLinks.map((link) => (
+            <a key={link.href} href={link.href} className="hover:text-coral transition-colors">
+              {link.label}
+            </a>
+          ))}
         </nav>
-        <a
-          href="/donate"
-          className="rounded-full bg-coral px-5 py-2.5 text-sm font-semibold text-cream shadow-sm hover:bg-coral-deep transition-colors flex items-center gap-1.5"
-        >
-          <span aria-hidden="true">♥</span> Donate Now
-        </a>
+
+        <div className="flex items-center gap-3">
+          {/* Mobile menu toggle — hidden from sm breakpoint up, where the full nav shows instead */}
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            className="sm:hidden flex h-9 w-9 items-center justify-center rounded-full text-ink/70 hover:text-coral transition-colors"
+          >
+            {menuOpen ? (
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path
+                  d="M5 5l10 10M15 5L5 15"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path
+                  d="M3 6h14M3 10h14M3 14h14"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            )}
+          </button>
+
+          <a
+            href="/donate"
+            className="rounded-full bg-coral px-4 sm:px-5 py-2 sm:py-2.5 text-sm font-semibold text-cream shadow-sm hover:bg-coral-deep transition-colors flex items-center gap-1.5 whitespace-nowrap"
+          >
+            <span aria-hidden="true">♥</span>
+            <span className="hidden xs:inline">Donate Now</span>
+            <span className="xs:hidden">Donate</span>
+          </a>
+        </div>
       </div>
+
+      {/* Mobile nav dropdown */}
+      {menuOpen && (
+        <nav
+          id="mobile-nav"
+          className="sm:hidden border-t border-ink/10 px-6 py-4 flex flex-col gap-4 text-sm text-ink/70 bg-cream/95"
+        >
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+              className="hover:text-coral transition-colors"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }
