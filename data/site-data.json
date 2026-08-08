@@ -67,7 +67,7 @@
     ]
   },
   "footer": {
-    "description": "Waypoint Relief delivers emergency aid through transparent, verified supply operations. This is a demonstration project built for a coursework assignment and is not a real charity.",
+    "description": "Waypoint Relief delivers emergency aid through transparent, verified supply operations.",
     "links": {
       "quick": ["Fund Aid Supplies", "View Live Ledger", "Get Involved"],
       "legal": ["Privacy Policy", "Terms of Service", "Financial Reports"]
