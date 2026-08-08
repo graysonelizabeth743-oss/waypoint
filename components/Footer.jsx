@@ -8,12 +8,12 @@ export default function Footer({ site, footer }) {
             <p className="mt-3 text-sm text-parchment/60 leading-relaxed max-w-sm">
               {footer.description}
             </p>
-            <a
+            {/*<a
               href={`mailto:${site.email}`}
               className="inline-block mt-4 text-sm text-amber hover:underline"
             >
               {site.email}
-            </a>
+            </a>*/}
           </div>
 
           <div>
@@ -51,7 +51,7 @@ export default function Footer({ site, footer }) {
 
         <div className="flex flex-col sm:flex-row justify-between gap-3 text-xs font-mono text-parchment/40">
           <span>© {site.year} {site.name}. All rights reserved.</span>
-          <span>Demonstration project — coursework use only, not a real charity.</span>
+          <span>save the world</span>
         </div>
       </div>
     </footer>
