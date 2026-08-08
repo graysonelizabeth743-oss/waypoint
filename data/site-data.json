@@ -1,0 +1,76 @@
+{
+  "site": {
+    "name": "Waypoint Relief",
+    "tagline": "Direct field logistics for emergency aid",
+    "email": "dispatch@waypointrelief.org",
+    "year": 2026
+  },
+  "dispatch": {
+    "label": "Gaza Field Dispatch",
+    "reference": "WR-GAZA-0417",
+    "location": "Gaza Strip",
+    "status": "Active Deployment",
+    "lastUpdated": "02 Aug 2026, 06:40 local"
+  },
+  "hero": {
+    "eyebrow": "Emergency Humanitarian Appeal · Gaza",
+    "headline": "Urgent life-saving relief for displaced families in Gaza",
+    "subhead": "Waypoint Relief operates last-mile supply corridors to deliver food parcels, clean drinking water, medical supplies, and emergency shelter kits directly to families in need—verified and tracked on a public ledger.",
+    "primaryCta": "Donate Emergency Aid",
+    "secondaryCta": "View Supply Ledger"
+  },
+  "trustMarks": [
+    { "label": "Independently Audited", "detail": "Quarterly by Ferrant & Cole LLP" },
+    { "label": "Registered Nonprofit", "detail": "EIN 87-4419203" },
+    { "label": "Transparent Tracking", "detail": "Every delivery logged publicly" }
+  ],
+  "ledger": {
+    "title": "Gaza Relief Supply Ledger",
+    "subtitle": "Essential supply units delivered during this operational cycle, verified upon entry.",
+    "cycleGoal": 25000,
+    "cycleRaised": 16420,
+    "currency": "$",
+    "entries": [
+      { "code": "WTR-01", "item": "Clean water jerrycans (5L)", "delivered": 4200, "unit": "cans" },
+      { "code": "FOD-02", "item": "Emergency family food parcels", "delivered": 3150, "unit": "parcels" },
+      { "code": "MED-03", "item": "Trauma & medical response kits", "delivered": 1890, "unit": "kits" },
+      { "code": "SHL-04", "item": "Weatherproof shelter kits & tarps", "delivered": 1120, "unit": "kits" }
+    ]
+  },
+  "process": [
+    {
+      "stage": "Assessment",
+      "detail": "On-the-ground teams log immediate family needs across distribution hubs every morning."
+    },
+    {
+      "stage": "Manifest",
+      "detail": "Aid convoys assemble verified supply manifests and time-stamp entries before deployment."
+    },
+    {
+      "stage": "Transit",
+      "detail": "Logistics teams monitor movement through designated transit points with real-time logging."
+    },
+    {
+      "stage": "Distribution",
+      "detail": "Local partner staff confirm direct handoffs to families, closing the manifest entry."
+    }
+  ],
+  "donors": {
+    "title": "Recent Support",
+    "subtitle": "Direct contributions logged in the last 48 hours.",
+    "recent": [
+      { "name": "R. Okafor", "amount": 250, "note": "For clean water distribution", "time": "14 min ago" },
+      { "name": "Anonymous", "amount": 1000, "note": "Match for emergency medical supplies", "time": "52 min ago" },
+      { "name": "M. Haddad", "amount": 75, "note": "For family food parcels", "time": "1 hr ago" },
+      { "name": "The Larsen Family", "amount": 500, "note": "Emergency shelter aid", "time": "3 hr ago" },
+      { "name": "Anonymous", "amount": 40, "note": "", "time": "5 hr ago" }
+    ]
+  },
+  "footer": {
+    "description": "Waypoint Relief delivers emergency aid through transparent, verified supply operations. This is a demonstration project built for a coursework assignment and is not a real charity.",
+    "links": {
+      "quick": ["Fund Aid Supplies", "View Live Ledger", "Get Involved"],
+      "legal": ["Privacy Policy", "Terms of Service", "Financial Reports"]
+    }
+  }
+}
