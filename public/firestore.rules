@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+    match /users/{userId} {
+      // Public read — required so the logged-out /subscribe page can query
+      // by email to check if an account already exists. Trade-off: this
+      // exposes every user's email + role to anyone who queries this
+      // collection, not just the one email someone typed in. If that's not
+      // acceptable, the safer alternative is a separate public collection
+      // holding only a yes/no per email (no role/other fields) — ask if
+      // you want that version instead.
+      allow read: if true;
+      // A user can only ever create THEIR OWN doc, and only with role "user"
+      // — this is what stops self-registration (or the AdminGate self-heal)
+      // from granting admin.
+      allow create: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.role == "user";
+      // Only an existing admin can change anyone's role.
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    match /settings/ledger {
+      allow read: if true;      // site visitors need to read the ledger
+      allow write: if isAdmin(); // only admins can change it, not any signed-in user
+    }
+    match /settings/donors {
+      allow read: if true;      // site visitors need to read the donor wall
+      allow write: if isAdmin(); // only admins can change it
+    }
+    match /subscribers/{subscriberId} {
+      allow create: if true;      // anyone can subscribe from the public form
+      allow read, update, delete: if isAdmin(); // only admins can view/manage the list
+    }
+    match /donations/{donationId} {
+      // Client writes directly now — captured via actions.order.capture()
+      // in the browser, no server route involved. Anyone can create a
+      // record (that's how a logged-out donor's payment gets saved at all),
+      // but nobody can read, edit, or delete existing ones from the client.
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+  }
+}

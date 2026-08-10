@@ -79,6 +79,20 @@ export default function LedgerDataManager() {
     return () => unsubscribe();
   }, []);
 
+  // Keep cycleRaised synced to live Firestore data even while an admin is
+  // mid-edit elsewhere in the form. Without this, a donation coming in
+  // while this page is open would get silently overwritten the next time
+  // "Save to database" is clicked, since the form would still hold
+  // whatever cycleRaised was when the page first loaded.
+  useEffect(() => {
+    if (!dbLedger) return;
+    setForm((prev) =>
+      prev && prev.cycleRaised !== dbLedger.cycleRaised
+        ? { ...prev, cycleRaised: dbLedger.cycleRaised }
+        : prev
+    );
+  }, [dbLedger?.cycleRaised]);
+
   const persist = useCallback(async (patch) => {
     setSaving(true);
     setError(null);
